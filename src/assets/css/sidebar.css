@@ -1,0 +1,121 @@
+.sidebar {
+  background-image: url("../img/sideImg.png");
+  display: flex;
+  overflow: hidden;
+  color: white;
+  flex-direction: column;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0 2vw 1vw 0;
+  height: 100%;
+  width: 20%;
+}
+elemento {
+  overflow-x: hidden;
+
+}
+
+
+.MuiDataGrid-virtualScroller.css-1793420-MuiDataGrid-virtualScroller {
+  background-color: rgba(222, 206, 206, 0.347);
+  width:auto;
+
+}
+.css-1j9bukl-MuiDataGrid-root .MuiDataGrid-sortIcon, .css-1j9bukl-MuiDataGrid-root .MuiDataGrid-filterIcon {
+  font-size: inherit;
+  color: white;
+}
+
+
+.super-app-theme--header{
+  width: 100%;
+  background-color: rgba(36, 30, 30, 0.685);
+  color: white;
+}
+.GACinfo {
+  display: flex;
+  align-self: center;
+  align-items: center;
+  width: 90%;
+  height: 20%;
+}
+.GACinfo > img {
+  height: 40%;
+}
+.GACinfo > h1 {
+  text-indent: 3vw;
+}
+.MenuSideBar {
+  overflow: hidden;
+  height: 60%;
+  background-color: rgb(255, 255, 255, 0.2);
+  border-radius: 0.70vw;
+}
+.MenuSideBar > ul {
+  height: 100%;
+  list-style: none;
+  color: rgb(9, 9, 9);
+}
+
+
+.MenuSideBar > ul > a > li {
+  font-size: 1.3vw;
+  display: flex;
+  box-shadow: 0 0.1vw 0.2vw 0 rgba(255, 255, 255, 0.078);
+  align-items: center;
+  justify-content: center;
+  height: 25%;
+}
+.MenuSideBar > ul > a :hover {
+  background-color: #deaef252;
+  transform: scale(1.1);
+}
+.MenuSideBar > ul > a {
+  color: white;
+  cursor: pointer;
+}
+
+.handleUser {
+  background-color: #363940;
+  display: flex;
+  margin-top: auto;
+  height: 8%;
+  align-items: center;
+}
+.userInfo {
+  margin-left: auto;
+  text-align: center;
+}
+.config {
+  background-color: #deaef2;
+  display: flex;
+  height: 100%;
+  border-radius: 2vw 0vw 1vw 0vw;
+  margin-left: auto;
+  width: 20%;
+}
+.config > a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.config > a > .cicon {
+  width: 50%;
+}
+.Role {
+  font-size: 1vw;
+  font-style: italic;
+  color: #deaef2;
+}
+.Username {
+  font-size: 1.2vw;
+}
+
+@media (max-width: 1250px) {
+  .sidebar {
+    width: 25%;
+  }
+  .GACinfo > h1 {
+    text-indent: 4.5vw;
+  }
+}

@@ -1,0 +1,43 @@
+@font-face {
+  font-family: "Segoe";
+  src: url("../assets/font/SegoeTVRegular.TTF") format("truetype");
+}
+
+h1 {
+  color: white;
+  font-size: 2.5vw;
+}
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Segoe;
+}
+.gestion-container{
+position: absolute;
+width: 100%;
+height: 100%;
+display: flex;
+
+
+}
+.gestion{
+  height: 100%;
+  width: 80%;
+}
+.gestion-header{
+  display: flex;
+  flex-direction: column;
+  margin-top: 2vw;
+  margin-left:-2vw;
+  align-items: end;
+  width: 100%;
+  height: 10%;
+  color: #4586BF;
+ 
+  
+}
+.gestion-body{
+width: 100%;
+height: calc(90% - 2vw);
+
+}
