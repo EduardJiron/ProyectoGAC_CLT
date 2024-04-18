@@ -25,6 +25,16 @@ const FormEditarFacultad = ({ Facultad, onCancel,onRecargarDatos,onSnackbar}) =>
 
   const handleSubmit = async () => {
     try {
+      switch (true) {
+        case formData.nombre === "":
+          onSnackbar("error", "Nombre es requerido");
+          return;
+        case formData.descripcion === "":
+          onSnackbar("error", "Descripción es requerida");
+          return;
+        default:
+          break;
+      }
       const success = await handleEditarFacultad(
         formData,
         Facultad.id_facultad
@@ -54,6 +64,8 @@ const FormEditarFacultad = ({ Facultad, onCancel,onRecargarDatos,onSnackbar}) =>
         Editar Facultad
       </Typography>
      <TextField
+     error={formData.nombre === ""}
+     helperText={formData.nombre === "" ? "Campo requerido" : ""}
       className="form-control"
         name="nombre"
         label="Nombre"
@@ -61,7 +73,8 @@ const FormEditarFacultad = ({ Facultad, onCancel,onRecargarDatos,onSnackbar}) =>
         onChange={handleChange}
       />
       <TextField
-
+        error={formData.descripcion === ""}
+        helperText={formData.descripcion === "" ? "Campo requerido" : ""}
         name="descripcion"
         label="Descripción"
         value={formData.descripcion}

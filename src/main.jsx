@@ -3,6 +3,7 @@ import {createBrowserRouter,RouterProvider,Route, BrowserRouter} from 'react-rou
 import './components/app.css'
 const app=createRoot(document.getElementById('root'))
 import { Carrera } from './routes/carrera' 
+import { PeriodoAcademico } from './routes/periodoAcademico'
 import { Facultad } from './routes/facultad'
 
 const router = createBrowserRouter([
@@ -13,7 +14,11 @@ const router = createBrowserRouter([
     {
       path: "/facultad",
       element: <Facultad name={'Facultad'} />,
-    }
+    },
+    {
+      path: "/periodo_academico",
+      element: <PeriodoAcademico name={'Periodo Academico'} />,
+    },
   ]);
 
 app.render(
