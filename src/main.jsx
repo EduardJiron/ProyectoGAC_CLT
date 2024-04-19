@@ -5,6 +5,7 @@ const app=createRoot(document.getElementById('root'))
 import { Carrera } from './routes/carrera' 
 import { PeriodoAcademico } from './routes/periodoAcademico'
 import { Facultad } from './routes/facultad'
+import { Rol } from './routes/rol'
 
 const router = createBrowserRouter([
     {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       path: "/periodo_academico",
       element: <PeriodoAcademico name={'Periodo Academico'} />,
     },
+      {
+      path: "/rol",
+      element: <Rol name={'Rol'} />,
+      }
   ]);
 
 app.render(

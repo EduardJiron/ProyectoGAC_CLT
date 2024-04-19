@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Table from "../utilities/table";
-import FormEliminarCarrera from "./views/FormEliminarCarrera";
-import FormEditarCarrera from "./views/FormEditarCarrera";
-import FormInsertarCarrera from "./views/FormInsertarCarrera";
+
+
+
 import ContextMenu from "../utilities/menuContext";
 import CustomSnackbar from "../utilities/CustomSnackbar";
 import { handleChangePage, handleFilterChange, handleContextMenu, handleCancelarEdicion, handleCancelarEliminacion, handleEditarClick, handleEliminarClick } from "../utilities/eventHandlers";
 import { handlesnapbar } from "../utilities/snackbar";
 import { Button } from "@mui/material";
 
-export const Gestionar = ({ uri }) => {
+export const GestionarRol = ({ uri }) => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(1);
@@ -21,7 +21,7 @@ export const Gestionar = ({ uri }) => {
   const [addModel, setAddModel] = useState(null);
   const [editingModel, setEditingModel] = useState(null);
   const [deletedModel, setDeletedModel] = useState(null);
-  const [facultades, setFacultades] = useState([]);
+  const [Periodo, setPeriodo] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -30,9 +30,10 @@ export const Gestionar = ({ uri }) => {
     const fetchData = async () => {
       if (uri) {
         try {
+          
           const response = await axios.get(uri);
-          const responseFacultades = await axios.get("http://192.168.1.16:3001/api/v1/facultad/allfacultad");
-          setFacultades(responseFacultades.data.body);
+          const responsePeriodo = await axios.get("http://192.168.1.16:3001/api/v1/rol/getallrol");
+          setPeriodo(responsePeriodo.data.body);
           setData(response.data.body);
           setFilteredData(response.data.body);
         } catch (err) {
@@ -61,8 +62,8 @@ export const Gestionar = ({ uri }) => {
 
   const handleRecargarDatos = async () => {
     try {
-      const responseCarreras = await axios.get(uri);
-      setData(responseCarreras.data.body);
+      const responseRols = await axios.get(uri);
+      setData(responseRols.data.body);
     } catch (error) {
       console.error("Error al recargar datos:", error);
     }
@@ -78,7 +79,7 @@ export const Gestionar = ({ uri }) => {
         variant="contained"
         onClick={() => setAddModel(true)}
         sx={{ alignSelf: 'end', marginRight: '8vw' }}
-      >Añadir Carrera</Button>
+      >Añadir rol</Button>
       <Table
         filteredData={filteredData}
         page={page}
@@ -87,12 +88,12 @@ export const Gestionar = ({ uri }) => {
         handleChangePage={(event, newPage) => handleChangePage(event, newPage, setPage)}
         handleFilterChange={(event) => handleFilterChange(event, setFilterValue)}
         handleContextMenu={(event, row) => handleContextMenu(event, row, setAnchorPosition, setSelectedRow)}
-        columns={["id_carrera", "nombre", "descripcion", "facultad"]}
+        columns={["id_Rol", "nombre", "Descripcion"]}
       />
       {addModel && (
-        <FormInsertarCarrera
-          carrera={addModel}
-          facultades={facultades}
+        <FormInsertarRol
+          Rol={addModel}
+          Periodo={Periodo}
           onCancel={() => handleCancelarEdicion(setAddModel)}
           onRecargarDatos={handleRecargarDatos}
           onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
@@ -100,9 +101,8 @@ export const Gestionar = ({ uri }) => {
       )}
 
       {editingModel && (
-        <FormEditarCarrera
-          carrera={editingModel}
-          facultades={facultades}
+        <FormEditarRol
+          Rol={editingModel}
           onCancel={() => handleCancelarEdicion(setEditingModel)}
           onRecargarDatos={handleRecargarDatos}
           onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
@@ -110,8 +110,8 @@ export const Gestionar = ({ uri }) => {
       )}
       {
         deletedModel && (
-          <FormEliminarCarrera
-            carrera={deletedModel}
+          <FormEliminarRol
+            Rol={deletedModel}
             open={true}
             onCancel={() => handleCancelarEliminacion(setDeletedModel)}
             onRecargarDatos={(uri) => handleRecargarDatos(uri, setData)}

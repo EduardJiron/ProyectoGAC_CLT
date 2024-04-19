@@ -3,6 +3,8 @@ import axios from "axios";
 import Table from "../utilities/table";
 
 import FormInsertarPeriodoAcademico from "./views/InsertarPeriodoAcademico";
+import FormEliminarPeriodoAcademico from "./views/EliminarPeriodoAcademico";
+import FormEditarPeriodoAcademico from './views/EditarPeriodoAcademico'
 import ContextMenu from "../utilities/menuContext";
 import CustomSnackbar from "../utilities/CustomSnackbar";
 import { handleChangePage, handleFilterChange, handleContextMenu, handleCancelarEdicion, handleCancelarEliminacion, handleEditarClick, handleEliminarClick } from "../utilities/eventHandlers";
@@ -20,7 +22,7 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
   const [addModel, setAddModel] = useState(null);
   const [editingModel, setEditingModel] = useState(null);
   const [deletedModel, setDeletedModel] = useState(null);
-  const [facultades, setFacultades] = useState([]);
+  const [Periodo, setPeriodo] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -31,8 +33,7 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
         try {
           
           const response = await axios.get(uri);
-          const responseFacultades = await axios.get("http://192.168.1.12:3001/api/v1/facultad/allfacultad");
-          setFacultades(responseFacultades.data.body);
+          setPeriodo(responsePeriodo.data.body);
           setData(response.data.body);
           setFilteredData(response.data.body);
         } catch (err) {
@@ -78,7 +79,7 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
         variant="contained"
         onClick={() => setAddModel(true)}
         sx={{ alignSelf: 'end', marginRight: '8vw' }}
-      >Añadir Facultad</Button>
+      >Añadir Periodo Academico</Button>
       <Table
         filteredData={filteredData}
         page={page}
@@ -87,12 +88,12 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
         handleChangePage={(event, newPage) => handleChangePage(event, newPage, setPage)}
         handleFilterChange={(event) => handleFilterChange(event, setFilterValue)}
         handleContextMenu={(event, row) => handleContextMenu(event, row, setAnchorPosition, setSelectedRow)}
-        columns={["id_PeriodoAcademico", "nombre", "descripcion", "facultad"]}
+        columns={["id_PeriodoAcademico", "nombre", "Fecha inicio", "Fecha final"]}
       />
       {addModel && (
         <FormInsertarPeriodoAcademico
           PeriodoAcademico={addModel}
-          facultades={facultades}
+          Periodo={Periodo}
           onCancel={() => handleCancelarEdicion(setAddModel)}
           onRecargarDatos={handleRecargarDatos}
           onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
@@ -102,7 +103,6 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
       {editingModel && (
         <FormEditarPeriodoAcademico
           PeriodoAcademico={editingModel}
-          facultades={facultades}
           onCancel={() => handleCancelarEdicion(setEditingModel)}
           onRecargarDatos={handleRecargarDatos}
           onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
