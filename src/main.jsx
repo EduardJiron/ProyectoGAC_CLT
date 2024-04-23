@@ -1,33 +1,33 @@
-import {createRoot} from 'react-dom/client'
-import {createBrowserRouter,RouterProvider,Route, BrowserRouter} from 'react-router-dom'
-import './components/app.css'
-const app=createRoot(document.getElementById('root'))
-import { Carrera } from './routes/carrera' 
-import { PeriodoAcademico } from './routes/periodoAcademico'
-import { Facultad } from './routes/facultad'
-import { Rol } from './routes/rol'
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import './components/app.css';
+import { Carrera } from './routes/carrera';
+import { PeriodoAcademico } from './routes/periodoAcademico';
+import { Facultad } from './routes/facultad';
+import { Login } from './routes/login';
 
-const router = createBrowserRouter([
-    {
-      path: "/carrera",
-      element: <Carrera name={'Carrera'} />,
-    },
-    {
-      path: "/facultad",
-      element: <Facultad name={'Facultad'} />,
-    },
-    {
-      path: "/periodo_academico",
-      element: <PeriodoAcademico name={'Periodo Academico'} />,
-    },
-      {
-      path: "/rol",
-      element: <Rol name={'Rol'} />,
-      }
-  ]);
+const token = sessionStorage.getItem('token');
+const config = {
+  headers:
+    { Authorization: `Bearer ${token}` }
+};
+
+const app = createRoot(document.getElementById('root'));
 
 app.render(
-<>
-<RouterProvider router={router}/>
-</>
-)
+  <BrowserRouter>
+    <Routes>
+      {token ? (
+        <>
+          <Route path="/facultad" element={<Facultad name="Facultad" />} />
+          <Route path="/carrera" element={<Carrera name="Carrera" token={config} />} />
+          <Route path="/periodo_academico" element={<PeriodoAcademico name="Periodo Académico" />} />
+          
+        </>
+      ) : (
+        <Route path="*" element={<Navigate to="/login" />} />
+      )}
+      <Route path="/login" element={<Login />} />
+    </Routes>
+  </BrowserRouter>
+);

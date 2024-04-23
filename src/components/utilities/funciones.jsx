@@ -1,18 +1,28 @@
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+import axios from "axios";
+
+export const api = axios.create({
+  baseURL: "http://192.168.1.16:3001/api/v1/",
+  headers: {
+    Authorization: `Bearer ${sessionStorage.getItem('token')}`
+  }
+});
+export const configToken =()=>{
+  return {
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem('token')}`
+    }
+  }
+
+}
 
 
-
-export const handleExportPDF = (data,name) => {
-    console.log(data)
-    const doc = new jsPDF();
-    const columns = Object.keys(data[0]);
-
-    doc.autoTable({
-      head: [columns],
-      body: data.map((row) => Object.values(row)),
-    });
-    doc.save('tabla_'+name+'.pdf');
-  };
-
-  
+ export const handleRequest = async (method, url, data,api) => {
+  try {
+    await api[method](url, data);
+    console.log(`${method.toUpperCase()} exitoso en ${url}`);
+    return true;
+  } catch (error) {
+    console.error(`Error al ${method.toLowerCase()} en ${url}:`, error);
+    return false;
+  }
+};

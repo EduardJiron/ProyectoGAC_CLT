@@ -1,20 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
-import { handleEditarCarrera } from "../service/carreraEndpoint";
+import { handleEditarCarrera,handleInsertarCarrera} from "../service/carreraEndpoint";
 import { Dialog, DialogContent } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 
 
-const FormEditarCarrera = ({ carrera, facultades,  onCancel,onRecargarDatos,onSnackbar}) => {
+const FormEditarCarrera = ({ carrera, facultades, isEditing, onCancel,onRecargarDatos,onSnackbar}) => {
   const [formData, setFormData] = useState({
-    nombre: carrera.Carrera,
-    descripcion: carrera.Descripcion,
-    id_facultad: facultades.length > 0 ? facultades[0].id_facultad : "",
+    nombre: "",
+    descripcion: "",
+    id_facultad: ""
   });
  
+  useEffect(() => {
+    if (isEditing) {
+      setFormData({
+        nombre: carrera.Carrera|| '',
+        descripcion: carrera.Descripcion || "",
+        id_facultad: facultades.length > 0 ? facultades[0].id_facultad : "" ,
+      });
+    } else {
+      setFormData({
+        nombre: "",
+        descripcion: "",
+        id_facultad: "",
+      });
+    }
+  }, [carrera, isEditing, facultades]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -42,18 +57,27 @@ const FormEditarCarrera = ({ carrera, facultades,  onCancel,onRecargarDatos,onSn
         default:
           break;
       }
-      const success = await handleEditarCarrera(
-        formData,
-        carrera.id_carrera
-      );
-      if (success) {
-        onRecargarDatos();
-        onSnackbar('success','Carrera editada exitosamente');
-        onCancel();
-        
-      } else {
-        console.error("Error al editar carrera");
-      }
+        if(isEditing){
+          const success = await handleEditarCarrera(formData, carrera.id_carrera);
+          if (success) {
+            onRecargarDatos();
+            onSnackbar('success', 'Carrera editada exitosamente');
+            onCancel();
+          } else {
+            console.error("Error al editar carrera");
+          }
+        }
+        else{
+          const success = await handleInsertarCarrera(formData);
+          if (success) {
+            onRecargarDatos();
+            onSnackbar('success', 'Carrera añadida exitosamente');
+            onCancel();
+          } else {
+            console.error("Error al añadir carrera");
+          }
+        }
+
     } catch (error) {
       console.error("Error al editar carrera:", error);
     }
@@ -67,9 +91,7 @@ const FormEditarCarrera = ({ carrera, facultades,  onCancel,onRecargarDatos,onSn
     
      <DialogContent>
      <div style={{ display:'flex',flexDirection:'column', alignItems:'center',justifyContent:'center',gap:'1vw' }}>
-     <Typography variant="subtitle1" component="div">
-        Editar Carrera
-      </Typography>
+     {isEditing ? <Typography variant="h5">Editar Carrera</Typography> : <Typography variant="h5">Añadir Carrera</Typography>}
      <TextField
      error={formData.nombre === ""}
      helperText={formData.nombre === "" ? "Campo requerido" : ""}
@@ -107,7 +129,9 @@ const FormEditarCarrera = ({ carrera, facultades,  onCancel,onRecargarDatos,onSn
       <Button
       
         color="secondary"
-      onClick={handleSubmit}>Editar</Button>
+      onClick={handleSubmit}>
+        {isEditing ? "Editar" : "Añadir"}
+      </Button>
       <Button 
       
       color="primary"

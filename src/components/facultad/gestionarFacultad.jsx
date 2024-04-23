@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Table from "../utilities/table";
-import FormEditarFacultad from "./views/FormEditarFacultad";
-import FormInsertarFacultad from "./views/FormInsertarFacultad";
-import FormEliminarFacultad from "./views/FormEliminarFacultad";
+import FormEditarFacultad from "./FormEditarFacultad";
+import {configToken} from '../utilities/funciones'
+import FormEliminarFacultad from "./FormEliminarFacultad";
 import ContextMenu from "../utilities/menuContext";
 import CustomSnackbar from "../utilities/CustomSnackbar";
-import { handleChangePage, handleFilterChange, handleContextMenu, handleCancelarEdicion, handleCancelarEliminacion, handleEditarClick, handleEliminarClick,handleCancelarInsercion } from "../utilities/eventHandlers";
+import { handleChangePage, handleFilterChange, handleContextMenu, handleCancelarEdicion, handleCancelarEliminacion, handleEditarClick, handleEliminarClick } from "../utilities/eventHandlers";
 import { handlesnapbar } from "../utilities/snackbar";
 import { Button } from "@mui/material";
+
 
 export const GestionarFacultad = ({ uri }) => {
   const [data, setData] = useState([]);
@@ -19,9 +20,9 @@ export const GestionarFacultad = ({ uri }) => {
   const [anchorPosition, setAnchorPosition] = useState({ mouseX: null, mouseY: null });
   const [selectedRow, setSelectedRow] = useState(null);
   const [addModel, setAddModel] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [editingModel, setEditingModel] = useState(null);
   const [deletedModel, setDeletedModel] = useState(null);
-  const [facultades, setFacultades] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -29,8 +30,9 @@ export const GestionarFacultad = ({ uri }) => {
   useEffect(() => {
     const fetchData = async () => {
       if (uri) {
+     
         try {
-          const response = await axios.get(uri);
+          const response = await axios.get(uri,configToken());
           setData(response.data.body);
           setFilteredData(response.data.body);
         } catch (err) {
@@ -59,7 +61,13 @@ export const GestionarFacultad = ({ uri }) => {
 
   const handleRecargarDatos = async () => {
     try {
-      const responseFacultades = await axios.get(uri);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      };
+      console.log(config);
+      const responseFacultades = await axios.get(uri,config);
       setData(responseFacultades.data.body);
     } catch (error) {
       console.error("Error al recargar datos:", error);
@@ -74,7 +82,7 @@ export const GestionarFacultad = ({ uri }) => {
       <Button
         color="secondary"
         variant="contained"
-        onClick={() => setAddModel(true)}
+        onClick={() => {setEditingModel(true) ,setIsEditing(false)}}
         sx={{ alignSelf: 'end', marginRight: '8vw' }}
       >Añadir Facultad</Button>
       <Table
@@ -91,15 +99,8 @@ export const GestionarFacultad = ({ uri }) => {
       {editingModel && (
         <FormEditarFacultad
           Facultad={editingModel}
+          isEditing={isEditing}
           onCancel={() => handleCancelarEdicion(setEditingModel)}
-          onRecargarDatos={handleRecargarDatos}
-          onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
-        />
-      )}
-       {addModel && (
-        <FormInsertarFacultad
-          Facultad={addModel}
-          onCancel={() => handleCancelarEdicion(setAddModel)}
           onRecargarDatos={handleRecargarDatos}
           onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
         />
@@ -118,7 +119,7 @@ export const GestionarFacultad = ({ uri }) => {
       <ContextMenu
         anchorPosition={anchorPosition}
         onClose={() => setAnchorPosition({ mouseX: null, mouseY: null })}
-        onEditarClick={() => handleEditarClick(selectedRow, setEditingModel, () => setAnchorPosition({ mouseX: null, mouseY: null }))}
+        onEditarClick={ () => {handleEditarClick(selectedRow, setEditingModel, () => setAnchorPosition({ mouseX: null, mouseY: null })), setIsEditing(true)}}
         onEliminarClick={() => handleEliminarClick(selectedRow, setDeletedModel, () => setAnchorPosition({ mouseX: null, mouseY: null }))}
       />
       <CustomSnackbar

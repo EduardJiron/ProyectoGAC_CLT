@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Table from "../utilities/table";
-import FormEliminarCarrera from "./views/FormEliminarCarrera";
-import FormEditarCarrera from "./views/FormEditarCarrera";
-import FormInsertarCarrera from "./views/FormInsertarCarrera";
+import FormEliminarCarrera from "./FormEliminarCarrera";
+import FormEditarCarrera from "./FormEditarCarrera";
 import ContextMenu from "../utilities/menuContext";
+import {configToken} from '../utilities/funciones'
 import CustomSnackbar from "../utilities/CustomSnackbar";
 import { handleChangePage, handleFilterChange, handleContextMenu, handleCancelarEdicion, handleCancelarEliminacion, handleEditarClick, handleEliminarClick } from "../utilities/eventHandlers";
 import { handlesnapbar } from "../utilities/snackbar";
 import { Button } from "@mui/material";
 
-export const Gestionar = ({ uri }) => {
+export const Gestionar = ({ uri,token }) => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(1);
@@ -20,6 +20,7 @@ export const Gestionar = ({ uri }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [addModel, setAddModel] = useState(null);
   const [editingModel, setEditingModel] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [deletedModel, setDeletedModel] = useState(null);
   const [facultades, setFacultades] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -29,9 +30,10 @@ export const Gestionar = ({ uri }) => {
   useEffect(() => {
     const fetchData = async () => {
       if (uri) {
+        console.log(token);
         try {
-          const response = await axios.get(uri);
-          const responseFacultades = await axios.get("http://192.168.1.16:3001/api/v1/facultad/allfacultad");
+          const response = await axios.get(uri,configToken());
+          const responseFacultades = await axios.get("http://192.168.1.16:3001/api/v1/facultad/allfacultad",configToken());
           setFacultades(responseFacultades.data.body);
           setData(response.data.body);
           setFilteredData(response.data.body);
@@ -61,7 +63,7 @@ export const Gestionar = ({ uri }) => {
 
   const handleRecargarDatos = async () => {
     try {
-      const responseCarreras = await axios.get(uri);
+      const responseCarreras = await axios.get(uri,token);
       setData(responseCarreras.data.body);
     } catch (error) {
       console.error("Error al recargar datos:", error);
@@ -76,7 +78,7 @@ export const Gestionar = ({ uri }) => {
         <Button
         color="secondary"
         variant="contained"
-        onClick={() => setAddModel(true)}
+        onClick={() => {setEditingModel(true),setIsEditing(false)}}
         sx={{ alignSelf: 'end', marginRight: '8vw' }}
       >Añadir Carrera</Button>
       <Table
@@ -89,19 +91,11 @@ export const Gestionar = ({ uri }) => {
         handleContextMenu={(event, row) => handleContextMenu(event, row, setAnchorPosition, setSelectedRow)}
         columns={["id_carrera", "nombre", "descripcion", "facultad"]}
       />
-      {addModel && (
-        <FormInsertarCarrera
-          carrera={addModel}
-          facultades={facultades}
-          onCancel={() => handleCancelarEdicion(setAddModel)}
-          onRecargarDatos={handleRecargarDatos}
-          onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
-        />
-      )}
 
       {editingModel && (
         <FormEditarCarrera
           carrera={editingModel}
+          isEditing={isEditing}
           facultades={facultades}
           onCancel={() => handleCancelarEdicion(setEditingModel)}
           onRecargarDatos={handleRecargarDatos}
@@ -122,8 +116,8 @@ export const Gestionar = ({ uri }) => {
       <ContextMenu
         anchorPosition={anchorPosition}
         onClose={() => setAnchorPosition({ mouseX: null, mouseY: null })}
-        onEditarClick={() => handleEditarClick(selectedRow, setEditingModel, () => setAnchorPosition({ mouseX: null, mouseY: null }))}
-        onEliminarClick={() => handleEliminarClick(selectedRow, setDeletedModel, () => setAnchorPosition({ mouseX: null, mouseY: null }))}
+        onEditarClick={() => {handleEditarClick(selectedRow, setEditingModel, () => setAnchorPosition({ mouseX: null, mouseY: null })),setIsEditing(true)}}
+        onEliminarClick={() => {handleEliminarClick(selectedRow, setDeletedModel, () => setAnchorPosition({ mouseX: null, mouseY: null }))}}
       />
       <CustomSnackbar
         open={snackbarOpen}

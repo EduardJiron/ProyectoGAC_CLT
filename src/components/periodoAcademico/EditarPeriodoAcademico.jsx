@@ -1,23 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import "/src/assets/css/sidebar.css";
-import { handleInsertarPeriodoAcademico } from "../service/periodoAcademicoEndpoint";
+import { handleEditarPeriodoAcademico,handleInsertarPeriodoAcademico} from "../service/periodoAcademicoEndpoint";
 import { Dialog, DialogContent } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Input from '@mui/joy/Input';
 
 
-const FormInsertarPeriodoAcademico = ({onCancel,onRecargarDatos,onSnackbar}) => {
+const FormEditarPeriodoAcademico = ({onCancel,PeriodoAcademico,isEditing,onRecargarDatos,onSnackbar}) => {
   
-  const [formData, setFormData] = useState({
-    nombre: "",
-    fecha_inicio: "",
-    fecha_final: ""
-    });
-  
-    console.log(formData)
+    const [formData, setFormData] = useState({
+        nombre: '',
+        fecha_inicio: '',
+        fecha_final: '',
+      });
+      useEffect(() => {
+        if(isEditing){
+          setFormData({
+            nombre: PeriodoAcademico.nombre || "",
+            fecha_inicio: PeriodoAcademico.fecha_inicio || "",
+            fecha_final: PeriodoAcademico.fecha_final || "",
+          });
+        }
+        else{
+          setFormData({
+            nombre: "",
+            fecha_inicio: "",
+            fecha_final: "",
+          });
+        }
 
+      }, [PeriodoAcademico,isEditing])
+    
+    console.log(PeriodoAcademico);
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData({ ...formData, [name]: value });
@@ -48,19 +64,29 @@ const FormInsertarPeriodoAcademico = ({onCancel,onRecargarDatos,onSnackbar}) => 
         default:
           break;
       }
-      const success = await handleInsertarPeriodoAcademico(
-        formData
-      );
-      if (success) {
-        onRecargarDatos();
-        onSnackbar('success','PeriodoAcademico Añadida exitosamente');
-        onCancel();
-        
-      } else {
-        onSnackbar('error','Error al anadir Periodo Academico');
+      if(isEditing){
+        const success = await handleEditarPeriodoAcademico(formData,PeriodoAcademico.periodo_academico);
+        if(success){
+          onRecargarDatos();
+          onSnackbar('success', 'Periodo Academico editado exitosamente');
+          onCancel();
+        }else{
+          console.error("Error al editar PeriodoAcademico");
+        }
       }
+      else{
+        const success = await handleInsertarPeriodoAcademico(formData);
+        if(success){
+          onRecargarDatos();
+          onSnackbar('success', 'Periodo Academico añadido exitosamente');
+          onCancel();
+        }else{
+          console.error("Error al añadir PeriodoAcademico");
+
+      }
+    }
     } catch (error) {
-      console.error("Error al Añadir PeriodoAcademico:", error);
+      console.error("Error al editar PeriodoAcademico:", error);
     }
   };
 
@@ -75,10 +101,11 @@ const FormInsertarPeriodoAcademico = ({onCancel,onRecargarDatos,onSnackbar}) => 
      <Typography 
      sx={{marginTop:'1vw', fontWeight:'bold'}}
      variant="subtitle1" component="div">
-        Añadir Periodo Academico
+        {isEditing ? "Editar Periodo Academico" : "Añadir Periodo Academico"}
       </Typography>
      <TextField
         size="small"
+      
         error={formData.nombre === ""}
         helperText={formData.nombre === "" ? "Campo requerido" : ""}
       className="form-control"
@@ -101,7 +128,7 @@ const FormInsertarPeriodoAcademico = ({onCancel,onRecargarDatos,onSnackbar}) => 
         type="date"
         slotProps={{
           input: {
-            min: '1900-12-31',
+            min: '2000-12-31',
             max: '2080-12-31',
           },
         }}
@@ -130,7 +157,9 @@ const FormInsertarPeriodoAcademico = ({onCancel,onRecargarDatos,onSnackbar}) => 
       <Button
       
         color="secondary"
-      onClick={handleSubmit}>Añadir</Button>
+      onClick={handleSubmit}>
+        {isEditing ? "Editar" : "Añadir"}
+      </Button>
       <Button 
       
       color="primary"
@@ -147,4 +176,4 @@ const FormInsertarPeriodoAcademico = ({onCancel,onRecargarDatos,onSnackbar}) => 
   );
 };
 
-export default FormInsertarPeriodoAcademico;
+export default FormEditarPeriodoAcademico;

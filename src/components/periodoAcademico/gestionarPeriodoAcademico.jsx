@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Table from "../utilities/table";
-
-import FormInsertarPeriodoAcademico from "./views/InsertarPeriodoAcademico";
-import FormEliminarPeriodoAcademico from "./views/EliminarPeriodoAcademico";
-import FormEditarPeriodoAcademico from './views/EditarPeriodoAcademico'
+import {configToken} from '../utilities/funciones'
+import FormEliminarPeriodoAcademico from "./EliminarPeriodoAcademico";
+import FormEditarPeriodoAcademico from './EditarPeriodoAcademico'
 import ContextMenu from "../utilities/menuContext";
 import CustomSnackbar from "../utilities/CustomSnackbar";
 import { handleChangePage, handleFilterChange, handleContextMenu, handleCancelarEdicion, handleCancelarEliminacion, handleEditarClick, handleEliminarClick } from "../utilities/eventHandlers";
@@ -19,6 +18,7 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
   const [filterValue, setFilterValue] = useState("");
   const [anchorPosition, setAnchorPosition] = useState({ mouseX: null, mouseY: null });
   const [selectedRow, setSelectedRow] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [addModel, setAddModel] = useState(null);
   const [editingModel, setEditingModel] = useState(null);
   const [deletedModel, setDeletedModel] = useState(null);
@@ -32,8 +32,7 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
       if (uri) {
         try {
           
-          const response = await axios.get(uri);
-          setPeriodo(responsePeriodo.data.body);
+          const response = await axios.get(uri,configToken());
           setData(response.data.body);
           setFilteredData(response.data.body);
         } catch (err) {
@@ -62,7 +61,7 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
 
   const handleRecargarDatos = async () => {
     try {
-      const responsePeriodoAcademicos = await axios.get(uri);
+      const responsePeriodoAcademicos = await axios.get(uri,configToken());
       setData(responsePeriodoAcademicos.data.body);
     } catch (error) {
       console.error("Error al recargar datos:", error);
@@ -77,7 +76,7 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
         <Button
         color="secondary"
         variant="contained"
-        onClick={() => setAddModel(true)}
+        onClick={() => {setEditingModel(true), setIsEditing(false)}}
         sx={{ alignSelf: 'end', marginRight: '8vw' }}
       >Añadir Periodo Academico</Button>
       <Table
@@ -90,19 +89,11 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
         handleContextMenu={(event, row) => handleContextMenu(event, row, setAnchorPosition, setSelectedRow)}
         columns={["id_PeriodoAcademico", "nombre", "Fecha inicio", "Fecha final"]}
       />
-      {addModel && (
-        <FormInsertarPeriodoAcademico
-          PeriodoAcademico={addModel}
-          Periodo={Periodo}
-          onCancel={() => handleCancelarEdicion(setAddModel)}
-          onRecargarDatos={handleRecargarDatos}
-          onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
-        />
-      )}
 
       {editingModel && (
         <FormEditarPeriodoAcademico
           PeriodoAcademico={editingModel}
+          isEditing={isEditing}
           onCancel={() => handleCancelarEdicion(setEditingModel)}
           onRecargarDatos={handleRecargarDatos}
           onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
@@ -122,7 +113,7 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
       <ContextMenu
         anchorPosition={anchorPosition}
         onClose={() => setAnchorPosition({ mouseX: null, mouseY: null })}
-        onEditarClick={() => handleEditarClick(selectedRow, setEditingModel, () => setAnchorPosition({ mouseX: null, mouseY: null }))}
+        onEditarClick={() =>{ handleEditarClick(selectedRow, setEditingModel, () => setAnchorPosition({ mouseX: null, mouseY: null })),setIsEditing(true)}}
         onEliminarClick={() => handleEliminarClick(selectedRow, setDeletedModel, () => setAnchorPosition({ mouseX: null, mouseY: null }))}
       />
       <CustomSnackbar
