@@ -27,7 +27,7 @@ export const Sidebar = () => {
         </div>
         <div className="handleUser">
           <section className="userInfo">
-            <p className="Username">Username</p>
+            <p className="Username">{localStorage.getItem('usuario')}</p>
             <p className="subText Role">Role</p>
           </section>
           <section className="config">

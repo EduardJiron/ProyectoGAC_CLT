@@ -93,7 +93,7 @@ export const GestionarFacultad = ({ uri }) => {
         handleChangePage={(event, newPage) => handleChangePage(event, newPage, setPage)}
         handleFilterChange={(event) => handleFilterChange(event, setFilterValue)}
         handleContextMenu={(event, row) => handleContextMenu(event, row, setAnchorPosition, setSelectedRow)}
-        columns={["id_facultad", "nombre", "descripcion"]}
+        columns={["nombre", "descripcion"]}
       />
 
       {editingModel && (

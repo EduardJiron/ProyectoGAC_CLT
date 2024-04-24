@@ -63,7 +63,7 @@ export const Gestionar = ({ uri,token }) => {
 
   const handleRecargarDatos = async () => {
     try {
-      const responseCarreras = await axios.get(uri,token);
+      const responseCarreras = await axios.get(uri,configToken());
       setData(responseCarreras.data.body);
     } catch (error) {
       console.error("Error al recargar datos:", error);
@@ -89,7 +89,7 @@ export const Gestionar = ({ uri,token }) => {
         handleChangePage={(event, newPage) => handleChangePage(event, newPage, setPage)}
         handleFilterChange={(event) => handleFilterChange(event, setFilterValue)}
         handleContextMenu={(event, row) => handleContextMenu(event, row, setAnchorPosition, setSelectedRow)}
-        columns={["id_carrera", "nombre", "descripcion", "facultad"]}
+        columns={["nombre", "descripcion", "facultad"]}
       />
 
       {editingModel && (

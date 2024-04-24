@@ -4,15 +4,20 @@ import axios from 'axios';
 export const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [token, setToken] = useState(localStorage.getItem('token') || null); // Obtener el token del 
-
-  const handleLogin = async() => {
+  const [token, setToken] = useState(localStorage.getItem('token') || null);  
+  const [idProfesor, setIdProfesor] = useState('' || null);
+ 
+  const handleLogin = async () => {
     try {
       const response = await axios.post('http://192.168.1.16:3001/api/v1/login', {
         username,
         password,
       });
       setToken(response.data.token);
+      const idProfesor = response.data.profesor.id_profesor; 
+      
+      localStorage.setItem('profesor', idProfesor); 
+      console.log(idProfesor);
     } catch (e) {
       console.error(e);
     }
@@ -22,6 +27,7 @@ export const Login = () => {
     
     if (token) {
       sessionStorage.setItem('token', token);
+      localStorage.setItem('usuario', username);
     }
   }, [token]);
 

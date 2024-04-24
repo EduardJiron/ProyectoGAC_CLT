@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Table from "../utilities/table";
-import {configToken} from '../utilities/funciones'
-import FormEliminarPeriodoAcademico from "./EliminarPeriodoAcademico";
-import FormEditarPeriodoAcademico from './EditarPeriodoAcademico'
+
 import ContextMenu from "../utilities/menuContext";
+import FormEditarClase from "./FormEditarClase";
+import {configToken} from '../utilities/funciones'
 import CustomSnackbar from "../utilities/CustomSnackbar";
 import { handleChangePage, handleFilterChange, handleContextMenu, handleCancelarEdicion, handleCancelarEliminacion, handleEditarClick, handleEliminarClick } from "../utilities/eventHandlers";
 import { handlesnapbar } from "../utilities/snackbar";
 import { Button } from "@mui/material";
 
-export const GestionarPeriodoAcademico = ({ uri }) => {
+export const GestionarClase = ({ uri }) => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(1);
@@ -18,11 +18,11 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
   const [filterValue, setFilterValue] = useState("");
   const [anchorPosition, setAnchorPosition] = useState({ mouseX: null, mouseY: null });
   const [selectedRow, setSelectedRow] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
   const [addModel, setAddModel] = useState(null);
   const [editingModel, setEditingModel] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [deletedModel, setDeletedModel] = useState(null);
-  const [Periodo, setPeriodo] = useState([]);
+  const [horario, setHorario] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -30,9 +30,11 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
   useEffect(() => {
     const fetchData = async () => {
       if (uri) {
+        console.log(localStorage.getItem('profesor'))   ;
         try {
-          
-          const response = await axios.get(uri,configToken());
+          const response = await axios.post(uri,null,configToken());
+          const responseHorario = await axios.get("http://192.168.1.16:3001/api/v1/horario/allhorario",configToken());
+          setHorario(responseHorario.data.body);
           setData(response.data.body);
           setFilteredData(response.data.body);
         } catch (err) {
@@ -61,8 +63,8 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
 
   const handleRecargarDatos = async () => {
     try {
-      const responsePeriodoAcademicos = await axios.get(uri,configToken());
-      setData(responsePeriodoAcademicos.data.body);
+      const responseClase = await axios.get(uri,configToken());
+      setData(responseClase.data.body);
     } catch (error) {
       console.error("Error al recargar datos:", error);
     }
@@ -76,9 +78,9 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
         <Button
         color="secondary"
         variant="contained"
-        onClick={() => {setEditingModel(true), setIsEditing(false)}}
+        onClick={() => {setEditingModel(true),setIsEditing(false)}}
         sx={{ alignSelf: 'end', marginRight: '8vw' }}
-      >Añadir Periodo Academico</Button>
+      >Añadir Clase</Button>
       <Table
         filteredData={filteredData}
         page={page}
@@ -87,13 +89,14 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
         handleChangePage={(event, newPage) => handleChangePage(event, newPage, setPage)}
         handleFilterChange={(event) => handleFilterChange(event, setFilterValue)}
         handleContextMenu={(event, row) => handleContextMenu(event, row, setAnchorPosition, setSelectedRow)}
-        columns={["Id","Periodo","Fecha inicio", "Fecha final"]}
+        columns={[ "nombre", "descripcion", "cod_clase",'profesor','fecha inicio','fecha final','dia']}
       />
 
       {editingModel && (
-        <FormEditarPeriodoAcademico
-          PeriodoAcademico={editingModel}
+        <FormEditarClase
+          carrera={editingModel}
           isEditing={isEditing}
+          horario={horario}
           onCancel={() => handleCancelarEdicion(setEditingModel)}
           onRecargarDatos={handleRecargarDatos}
           onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
@@ -101,8 +104,8 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
       )}
       {
         deletedModel && (
-          <FormEliminarPeriodoAcademico
-            PeriodoAcademico={deletedModel}
+          <FormEliminarCarrera
+            carrera={deletedModel}
             open={true}
             onCancel={() => handleCancelarEliminacion(setDeletedModel)}
             onRecargarDatos={(uri) => handleRecargarDatos(uri, setData)}
@@ -113,8 +116,8 @@ export const GestionarPeriodoAcademico = ({ uri }) => {
       <ContextMenu
         anchorPosition={anchorPosition}
         onClose={() => setAnchorPosition({ mouseX: null, mouseY: null })}
-        onEditarClick={() =>{ handleEditarClick(selectedRow, setEditingModel, () => setAnchorPosition({ mouseX: null, mouseY: null })),setIsEditing(true)}}
-        onEliminarClick={() => handleEliminarClick(selectedRow, setDeletedModel, () => setAnchorPosition({ mouseX: null, mouseY: null }))}
+        onEditarClick={() => {handleEditarClick(selectedRow, setEditingModel, () => setAnchorPosition({ mouseX: null, mouseY: null })),setIsEditing(true)}}
+        onEliminarClick={() => {handleEliminarClick(selectedRow, setDeletedModel, () => setAnchorPosition({ mouseX: null, mouseY: null }))}}
       />
       <CustomSnackbar
         open={snackbarOpen}
