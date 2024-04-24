@@ -14,7 +14,7 @@ export const Sidebar = () => {
             <a>
               <li>Hogar</li>
             </a>
-            <a>
+            <a href="/asistencia">
               <li>Asistencia</li>
             </a>
             <a>
@@ -31,7 +31,8 @@ export const Sidebar = () => {
             <p className="subText Role">Role</p>
           </section>
           <section className="config">
-            <a>
+            <a 
+            >
               <img src={ConfigIcon} className="cicon"></img>
             </a>
           </section>

@@ -23,6 +23,7 @@ export const GestionarClase = ({ uri }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [deletedModel, setDeletedModel] = useState(null);
   const [horario, setHorario] = useState([]);
+  const [periodo_academico, setPeriodo_academico] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -32,8 +33,11 @@ export const GestionarClase = ({ uri }) => {
       if (uri) {
         console.log(localStorage.getItem('profesor'))   ;
         try {
-          const response = await axios.post(uri,null,configToken());
+          const response = await axios.get(uri,configToken());
           const responseHorario = await axios.get("http://192.168.1.16:3001/api/v1/horario/allhorario",configToken());
+          const periodo_academico = await axios.get("http://192.168.1.16:3001/api/v1/periodo_academico/allperiodo_academico",configToken());
+          setPeriodo_academico(periodo_academico.data.body);
+          console.log(periodo_academico.data.body)
           setHorario(responseHorario.data.body);
           setData(response.data.body);
           setFilteredData(response.data.body);
@@ -65,6 +69,7 @@ export const GestionarClase = ({ uri }) => {
     try {
       const responseClase = await axios.get(uri,configToken());
       setData(responseClase.data.body);
+    
     } catch (error) {
       console.error("Error al recargar datos:", error);
     }
@@ -89,14 +94,15 @@ export const GestionarClase = ({ uri }) => {
         handleChangePage={(event, newPage) => handleChangePage(event, newPage, setPage)}
         handleFilterChange={(event) => handleFilterChange(event, setFilterValue)}
         handleContextMenu={(event, row) => handleContextMenu(event, row, setAnchorPosition, setSelectedRow)}
-        columns={[ "nombre", "descripcion", "cod_clase",'profesor','fecha inicio','fecha final','dia']}
+        columns={[ "nombre", "descripcion", "cod_clase",'Horario','fecha inicio','fecha_final']}
       />
 
       {editingModel && (
         <FormEditarClase
-          carrera={editingModel}
+          clase={editingModel}
           isEditing={isEditing}
           horario={horario}
+          periodo_academico={periodo_academico}
           onCancel={() => handleCancelarEdicion(setEditingModel)}
           onRecargarDatos={handleRecargarDatos}
           onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}

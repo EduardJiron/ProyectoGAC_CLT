@@ -3,6 +3,10 @@ import axios from 'axios';
 import { configToken } from '../utilities/funciones';
 import FormularioAsistencia from './formAsistencia';
 import { useEffect } from 'react';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+
 
 export const GestionarAsistencia = ({ uri }) => {
     const [data, setData] = useState([]);
@@ -45,14 +49,37 @@ export const GestionarAsistencia = ({ uri }) => {
             {isListVisible &&
                 <div className='classlist'>
                     {data.map((item) => (
-                        <div
-                            onClick={() => handleFormAsistencia(item.id_clase)}
-                            key={item.id_clase}>
-                            <p>{item.id_clase}</p>
-                            <p>{item.nombre}</p>
-                            <p>{item.descripcion}</p>
-                            <br />
-                        </div>
+                       <Accordion
+                       sx={{ width: '50vw' ,
+                       display:'flex',flexDirection:'column'
+                       , marginBottom:'1vw',backgroundColor:'#f5f5f5'
+                    }}
+                       key={item.id_clase}>
+
+                            <AccordionSummary
+                           
+                            >
+                                <div
+                                style={{textTransform:'uppercase',padding:'10px',width:'100%'}}
+                                className='classlist__item'>
+                                    <div className='classlist__item__title'>
+                                        <h3>{item.nombre}</h3>
+                                    </div>
+                                    <div
+                                    style={{justifyContent:'space-between'}}
+                                    className='classlist__item__content'>
+                                        <span>{item.fecha}</span>
+                                        <span>Horario: {item.horario} - {item.dia}</span>
+                                        <p> Cod: {item.cod_clase}</p>
+                                    </div>
+                                </div>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <div className='classlist__item__actions'>
+                                    <button onClick={() => handleFormAsistencia(item.id_clase)}>Tomar asistencia</button>
+                                </div>
+                            </AccordionDetails>
+                        </Accordion>
                     ))}
                 </div>
             }

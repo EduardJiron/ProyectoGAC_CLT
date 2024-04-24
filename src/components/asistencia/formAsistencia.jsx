@@ -61,13 +61,13 @@ const FormularioAsistencia = ({ id_clase, onCancel }) => {
     }
  }
 
- // Función para enviar los datos de asistencia de todos los estudiantes al servidor
+
  const enviarAsistencia = async () => {
-    setEnviandoAsistencia(true); // Activar el estado de enviando asistencia
+    setEnviandoAsistencia(true); 
     datosAsistencia.forEach((_, index) => {
       enviarAsistenciaEstudiante(index);
     });
-    setEnviandoAsistencia(false); // Desactivar el estado de enviando asistencia una vez finalizado el envío
+    setEnviandoAsistencia(false); 
  }
 
   return (
@@ -104,8 +104,7 @@ const FormularioAsistencia = ({ id_clase, onCancel }) => {
           </div>
         ))}
         <button type="button" onClick={enviarAsistencia} disabled={enviandoAsistencia}>Guardar Asistencia</button>
-        <button onClick={onCancel} disabled={enviandoAsistencia}>Cancelar</button> {/* Desactivar el botón Cancelar mientras se envía la asistencia */}
-      
+        <button onClick={onCancel} disabled={enviandoAsistencia}>Cancelar</button> 
     </div>
   );
 };
