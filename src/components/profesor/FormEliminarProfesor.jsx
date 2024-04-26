@@ -1,27 +1,27 @@
 import { Dialog } from "@mui/material";
-import {handleEliminarPeriodoAcademico} from "../service/periodoAcademicoEndpoint";
+import {handleEliminarProfesor} from "../service/profesorEndPoint";
 import Button from '@mui/material/Button';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 
-const FormEliminarPeriodoAcademico = ({ open,PeriodoAcademico, onCancel,onRecargarDatos,onSnackbar}) => {
+const FormEliminarProfesor= ({ open,Profesor, onCancel,onRecargarDatos,onSnackbar}) => {
 
     const onEliminar = async () => {
             try {
-                const success = await handleEliminarPeriodoAcademico(PeriodoAcademico.id_periodo);
+                const success = await handleEliminarProfesor(Profesor.id_profesor);
                 if (success) {
                     onRecargarDatos();
-                    onSnackbar('success','PeriodoAcademico eliminada exitosamente');
+                    onSnackbar('success','Profesor eliminado exitosamente');
                     onCancel();
                 } else {
-                    console.error("Error al eliminar PeriodoAcademico");
+                    console.error("Error al eliminar Profesor");
                 }
             } catch (error) {
-                console.error("Error al eliminar PeriodoAcademico:", error);
+                console.error("Error al eliminar Profesor:", error);
             }
 
     }
-console.log(PeriodoAcademico);
+
     return (
         <Dialog 
         aria-labelledby="alert-dialog-title"
@@ -30,7 +30,7 @@ console.log(PeriodoAcademico);
         open={open} onClose={onCancel}>
         <div >
         <DialogTitle id="alert-dialog-title">
-          {"¿Está seguro que desea eliminar el PeriodoAcademico "+PeriodoAcademico.nombre +"?"}
+          {"¿Está seguro que desea eliminar al profesor "+Profesor.nombre +"?"}
         </DialogTitle>
         <DialogActions>
           <Button  onClick={onEliminar}>Eliminar</Button>
@@ -43,4 +43,4 @@ console.log(PeriodoAcademico);
     );
     }
 
-    export default FormEliminarPeriodoAcademico;
+    export default FormEliminarProfesor;

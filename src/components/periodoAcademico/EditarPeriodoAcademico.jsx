@@ -65,7 +65,7 @@ const FormEditarPeriodoAcademico = ({onCancel,PeriodoAcademico,isEditing,onRecar
           break;
       }
       if(isEditing){
-        const success = await handleEditarPeriodoAcademico(formData,PeriodoAcademico.periodo_academico);
+        const success = await handleEditarPeriodoAcademico(formData,PeriodoAcademico.id_periodo);
         if(success){
           onRecargarDatos();
           onSnackbar('success', 'Periodo Academico editado exitosamente');

@@ -2,17 +2,18 @@ import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
-import { handleEditarclase, handleInsertarclase } from "../service/claseEndpoint";
+
 import { Dialog, DialogContent } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
-const FormEditarclase = ({ clase, horario, isEditing, periodo_academico, onCancel, onRecargarDatos, onSnackbar }) => {
+const FormEditarclase = ({ clase, horario, carrera,isEditing, periodo_academico, onCancel, onRecargarDatos, onSnackbar }) => {
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",
     cod_clase: "",
+    id_periodo: "",
     id_horario: "",
-    periodo_academico: ""
+    id_carrera: "",
   });
 
   useEffect(() => {
@@ -22,8 +23,9 @@ const FormEditarclase = ({ clase, horario, isEditing, periodo_academico, onCance
         nombre: clase.nombre_clase || "",
         descripcion: clase.descripcion || "",
         cod_clase: clase.cod_clase || "",
+        id_periodo: periodo_academico.length > 0 ? periodo_academico[0].id_periodo : "",
         id_horario: horario.length > 0 ? horario[0].id_horario : "",
-        periodo_academico: periodo_academico.length > 0 ? periodo_academico[0].periodo_academico : ""
+        id_carrera: carrera.length > 0 ? carrera[0].id_carrera : "",
       });
       
     } else {
@@ -31,8 +33,8 @@ const FormEditarclase = ({ clase, horario, isEditing, periodo_academico, onCance
         nombre: "",
         descripcion: "",
         cod_clase: "",
-        id_horario: "",
-        periodo_academico: ""
+        id_periodo: "",
+        id_carrera: "",
       });
     }
   }, [clase, isEditing, horario, periodo_academico]);
@@ -41,10 +43,17 @@ const FormEditarclase = ({ clase, horario, isEditing, periodo_academico, onCance
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
-  const handleHoarioChange = (event) => {
+
+const handleHorarioChange = (event) => {
     const { value } = event.target;
     setFormData({ ...formData, id_horario: value });
   };
+
+const handleCarreraChange = (event) => {
+    const { value } = event.target;
+    setFormData({ ...formData, id_carrera: value });
+  };
+
 
 
 
@@ -92,7 +101,7 @@ const FormEditarclase = ({ clase, horario, isEditing, periodo_academico, onCance
 
   const handlePeriodoChange = (event) => {
     const { value } = event.target;
-    setFormData({ ...formData, periodo_academicoe: value });
+    setFormData({ ...formData, id_periodo: value });
   };
 
   return (
@@ -122,20 +131,29 @@ const FormEditarclase = ({ clase, horario, isEditing, periodo_academico, onCance
             onChange={handleChange}
           />
           <TextField
-            error={formData.id_horario === ""}
-            sx={{ width: 220 }}
-            select
-            name="id_horario"
-            label="Horario"
-            value={formData.id_horario}
-            onChange={handleHoarioChange}
+            error={formData.cod_clase === ""}
+            helperText={formData.cod_clase === "" ? "Campo requerido" : ""}
+            name="cod_clase"
+            label="Código"
+            value={formData.cod_clase}
+            onChange={handleChange}
           >
-            {horario.map((horario) => (
-              <MenuItem key={horario.id_horario} value={horario.id_horario}>
-                {horario.horario}
-              </MenuItem>
-            ))}
           </TextField>
+         <TextField
+         error={formData.id_horario === ""}
+         sx={{ width: 220 }}
+         select
+         name="horario"
+         label="Horario"
+         value={formData.id_horario}
+         onChange={handleHorarioChange}
+         >
+          {horario.map((horario) => (
+            <MenuItem key={horario.id_horario} value={horario.id_horario}>
+              {horario.horario} 
+            </MenuItem>
+          ))}
+         </TextField>
 
           <TextField
             error={formData.periodo_academico === ""}
@@ -143,12 +161,27 @@ const FormEditarclase = ({ clase, horario, isEditing, periodo_academico, onCance
             select
             name="periodo_academico"
             label="Periodo academico"
-            value={formData.periodo_academico}
+            value={formData.id_periodo}
             onChange={handlePeriodoChange}
           >
             {periodo_academico.map((periodo) => (
-              <MenuItem key={periodo.periodo_academico} value={periodo.periodo_academico}>
+              <MenuItem key={periodo.id_periodo} value={periodo.id_periodo}>
                 {periodo.nombre}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            error={formData.id_carrera === ""}
+            sx={{ width: 220 }}
+            select
+            name="carrera"
+            label="Carrera"
+            value={formData.id_carrera}
+            onChange={handleCarreraChange}
+          >
+            {carrera.map((carrera) => (
+              <MenuItem key={carrera.id_carrera} value={carrera.id_carrera}>
+                {carrera.Carrera}
               </MenuItem>
             ))}
           </TextField>

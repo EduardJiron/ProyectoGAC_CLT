@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { configToken } from '../utilities/funciones';
-import FormularioAsistencia from './formAsistencia';
+
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import CustomSnackbar from '../utilities/CustomSnackbar';
-export const GestionarAsistencia = ({ uri }) => {
+import { GestionarCal } from './gestionarCal';
+export const GestionarCalificaciones = ({ uri }) => {
     const [data, setData] = useState([]);
     const [id_clase, setIdClase] = useState(null);
     const [isformVisible, setIsFormVisible] = useState(false);
@@ -18,7 +19,7 @@ export const GestionarAsistencia = ({ uri }) => {
 
     
 
-    const handleFormAsistencia = (id_clase) => {
+    const handleFormCalificacion = (id_clase) => {
         setIdClase(id_clase);
         setIsFormVisible(true);
         setIsListVisible(false);
@@ -86,7 +87,7 @@ export const GestionarAsistencia = ({ uri }) => {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <div>
-                                        <button onClick={() => handleFormAsistencia(item.id_clase)}>Tomar asistencia</button>
+                                        <button onClick={() => handleFormCalificacion(item.id_clase)}>Calificar</button>
                                     </div>
                                 </AccordionDetails>
                             </Accordion>
@@ -99,14 +100,9 @@ export const GestionarAsistencia = ({ uri }) => {
             
         }
 
-
-            {isformVisible && <FormularioAsistencia id_clase={id_clase}
-            onCancel={handleCancelar}
-            onSnackbar={handleSnackbar}
-
-            
-          />}
-
+        { isformVisible && (
+            <GestionarCal id_clase={id_clase} onCancel={handleCancelar} onSnackbar={handleSnackbar} />
+        )}
           
         </div>
     );
