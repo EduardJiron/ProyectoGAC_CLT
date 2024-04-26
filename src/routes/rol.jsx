@@ -2,7 +2,7 @@ import { Sidebar } from "../components/sidebar";
 import { useState, useEffect } from "react";
 import {GestionarRol} from '../components/rol/GestionarRol'
 export const Rol = ({ name }) => {
-  const [uri, setUri] = useState('http://192.168.1.16:3001/api/v1/periodo_academico/allperiodo_academico');
+  const [uri, setUri] = useState('http://localhost:3001/api/v1/periodo_academico/allperiodo_academico');
 
   return (
     <>

@@ -3,7 +3,7 @@ import { GestionarPeriodoAcademico } from '../components/periodoAcademico/gestio
 import { useState, useEffect } from "react";
 
 export const PeriodoAcademico = ({ name }) => {
-  const [uri, setUri] = useState('http://192.168.1.16:3001/api/v1/periodo_academico/allperiodo_academico');
+  const [uri, setUri] = useState('http://localhost:3001/api/v1/periodo_academico/allperiodo_academico');
 
   return (
     <>

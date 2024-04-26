@@ -10,7 +10,7 @@ const FormularioAsistencia = ({ id_clase, onCancel }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.16:3001/api/v1/estudiante/getEstudianteByclase/${id_clase}`, configToken());
+        const response = await axios.get(`http://localhost:3001/api/v1/estudiante/getEstudianteByclase/${id_clase}`, configToken());
         setEstudiantes(response.data.body);
         
         const initialAsistencia = response.data.body.map(estudiante => ({
@@ -54,7 +54,7 @@ const FormularioAsistencia = ({ id_clase, onCancel }) => {
   // Función para enviar los datos de asistencia de un estudiante al servidor
  const enviarAsistenciaEstudiante = async (index) => {
     try {
-      const response = await axios.post('http://192.168.1.16:3001/api/v1/asistencia/addAsistencia', datosAsistencia[index], configToken());
+      const response = await axios.post('http://localhost:3001/api/v1/asistencia/addAsistencia', datosAsistencia[index], configToken());
       onCancel(); 
     } catch (error) {
       console.error('Error al enviar la asistencia:', error);

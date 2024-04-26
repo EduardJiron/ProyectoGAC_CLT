@@ -34,8 +34,8 @@ export const GestionarClase = ({ uri }) => {
         console.log(localStorage.getItem('profesor'))   ;
         try {
           const response = await axios.get(uri,configToken());
-          const responseHorario = await axios.get("http://192.168.1.16:3001/api/v1/horario/allhorario",configToken());
-          const periodo_academico = await axios.get("http://192.168.1.16:3001/api/v1/periodo_academico/allperiodo_academico",configToken());
+          const responseHorario = await axios.get("http://localhost:3001/api/v1/horario/allhorario",configToken());
+          const periodo_academico = await axios.get("http://localhost:3001/api/v1/periodo_academico/allperiodo_academico",configToken());
           setPeriodo_academico(periodo_academico.data.body);
           console.log(periodo_academico.data.body)
           setHorario(responseHorario.data.body);

@@ -3,7 +3,7 @@ import { Gestionar } from '../components/carrera/gestionarCarrera';
 import { useState, useEffect } from "react";
 import {GestionarClase} from '../components/clase/gestionarClase'
 export const Clase = ({ name }) => {
-  const [uri, setUri] = useState('http://192.168.1.16:3001/api/v1/clase/getallclase/'+localStorage.getItem('profesor'));
+  const [uri, setUri] = useState('http://localhost:3001/api/v1/clase/getallclase/'+localStorage.getItem('profesor'));
 
   return (
     <>

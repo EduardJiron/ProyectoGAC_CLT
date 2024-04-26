@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Table from "../utilities/table";
-import FormEliminarCarrera from "./FormEliminarCarrera";
-import FormEditarCarrera from "./FormEditarCarrera";
-import ContextMenu from "../utilities/menuContext";
+import FormEditarEstudiante from "./formEditarEstudiante";
 import {configToken} from '../utilities/funciones'
+import FormEliminarEstudiante from "./formEliminarEstudiante";
+import ContextMenu from "../utilities/menuContext";
 import CustomSnackbar from "../utilities/CustomSnackbar";
 import { handleChangePage, handleFilterChange, handleContextMenu, handleCancelarEdicion, handleCancelarEliminacion, handleEditarClick, handleEliminarClick } from "../utilities/eventHandlers";
 import { handlesnapbar } from "../utilities/snackbar";
 import { Button } from "@mui/material";
 
-export const Gestionar = ({ uri,token }) => {
+
+export const GestionarEstudiante = ({ uri }) => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(1);
@@ -18,11 +19,10 @@ export const Gestionar = ({ uri,token }) => {
   const [filterValue, setFilterValue] = useState("");
   const [anchorPosition, setAnchorPosition] = useState({ mouseX: null, mouseY: null });
   const [selectedRow, setSelectedRow] = useState(null);
-  const [addModel, setAddModel] = useState(null);
-  const [editingModel, setEditingModel] = useState(null);
+  const [addModel, setAddModel] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [editingModel, setEditingModel] = useState(null);
   const [deletedModel, setDeletedModel] = useState(null);
-  const [facultades, setFacultades] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
@@ -30,11 +30,9 @@ export const Gestionar = ({ uri,token }) => {
   useEffect(() => {
     const fetchData = async () => {
       if (uri) {
-        console.log(token);
+     
         try {
           const response = await axios.get(uri,configToken());
-          const responseFacultades = await axios.get("http://localhost:3001/api/v1/facultad/allfacultad",configToken());
-          setFacultades(responseFacultades.data.body);
           setData(response.data.body);
           setFilteredData(response.data.body);
         } catch (err) {
@@ -63,24 +61,30 @@ export const Gestionar = ({ uri,token }) => {
 
   const handleRecargarDatos = async () => {
     try {
-      const responseCarreras = await axios.get(uri,configToken());
-      setData(responseCarreras.data.body);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      };
+      console.log(config);
+      const responseEstudiantees = await axios.get(uri,config);
+      setData(responseEstudiantees.data.body);
     } catch (error) {
       console.error("Error al recargar datos:", error);
     }
   };
-  
+
   return (
-    <>
-      <div
+
+    <div
       style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
     >
-        <Button
+      <Button
         color="secondary"
         variant="contained"
-        onClick={() => {setEditingModel(true),setIsEditing(false)}}
+        onClick={() => {setEditingModel(true) ,setIsEditing(false)}}
         sx={{ alignSelf: 'end', marginRight: '8vw' }}
-      >Añadir Carrera</Button>
+      >Añadir Estudiante</Button>
       <Table
         filteredData={filteredData}
         page={page}
@@ -89,14 +93,13 @@ export const Gestionar = ({ uri,token }) => {
         handleChangePage={(event, newPage) => handleChangePage(event, newPage, setPage)}
         handleFilterChange={(event) => handleFilterChange(event, setFilterValue)}
         handleContextMenu={(event, row) => handleContextMenu(event, row, setAnchorPosition, setSelectedRow)}
-        columns={["nombre", "descripcion", "facultad"]}
+        columns={["id_institucional", "nombre", "apellido", "cedula", "correo_intitucional", "fecha_nacimiento", "genero", "direccion",]}
       />
 
       {editingModel && (
-        <FormEditarCarrera
-          carrera={editingModel}
+        <FormEditarEstudiante
+          Estudiante={editingModel}
           isEditing={isEditing}
-          facultades={facultades}
           onCancel={() => handleCancelarEdicion(setEditingModel)}
           onRecargarDatos={handleRecargarDatos}
           onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
@@ -104,11 +107,11 @@ export const Gestionar = ({ uri,token }) => {
       )}
       {
         deletedModel && (
-          <FormEliminarCarrera
-            carrera={deletedModel}
+          <FormEliminarEstudiante
+            Estudiante={deletedModel}
             open={true}
             onCancel={() => handleCancelarEliminacion(setDeletedModel)}
-            onRecargarDatos={(uri) => handleRecargarDatos(uri, setData)}
+            onRecargarDatos={handleRecargarDatos}
             onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
           />
         )
@@ -116,8 +119,8 @@ export const Gestionar = ({ uri,token }) => {
       <ContextMenu
         anchorPosition={anchorPosition}
         onClose={() => setAnchorPosition({ mouseX: null, mouseY: null })}
-        onEditarClick={() => {handleEditarClick(selectedRow, setEditingModel, () => setAnchorPosition({ mouseX: null, mouseY: null })),setIsEditing(true)}}
-        onEliminarClick={() => {handleEliminarClick(selectedRow, setDeletedModel, () => setAnchorPosition({ mouseX: null, mouseY: null }))}}
+        onEditarClick={ () => {handleEditarClick(selectedRow, setEditingModel, () => setAnchorPosition({ mouseX: null, mouseY: null })), setIsEditing(true)}}
+        onEliminarClick={() => handleEliminarClick(selectedRow, setDeletedModel, () => setAnchorPosition({ mouseX: null, mouseY: null }))}
       />
       <CustomSnackbar
         open={snackbarOpen}
@@ -126,7 +129,7 @@ export const Gestionar = ({ uri,token }) => {
         message={snackbarMessage}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       />
-      </div>
-    </>
+    </div>
+
   );
 };

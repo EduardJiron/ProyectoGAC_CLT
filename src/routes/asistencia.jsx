@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 export const Asistencia = ({ name,token }) => {
 
     
-    const [uri, setUri] = useState('http://192.168.1.16:3001/api/v1/clase/getallclase/'+localStorage.getItem('profesor'));
+    const [uri, setUri] = useState('http://localhost:3001/api/v1/clase/getallclase/'+localStorage.getItem('profesor'));
 
 
   return (

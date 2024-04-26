@@ -9,7 +9,7 @@ export const Login = () => {
  
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://192.168.1.16:3001/api/v1/login', {
+      const response = await axios.post('http://localhost:3001/api/v1/login', {
         username,
         password,
       });
