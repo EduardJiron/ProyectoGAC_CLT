@@ -7,9 +7,11 @@ import { Gestionar } from '../components/carrera/gestionarCarrera';
 import { GestionarFacultad } from '../components/facultad/gestionarFacultad';
 import { GestionarPeriodoAcademico } from '../components/periodoAcademico/gestionarPeriodoAcademico';
 import { GestionarClase } from '../components/clase/gestionarClase';
+import { GestionarUsuario } from '../components/usuario/gestionarUsuario';
 import {InscripcionEstudiantes} from '../components/Inscripcion/gestionarInscripcion';
 import {GestionaClaseEstudiante} from '../components/EstudianteClase/gestionarEstudianteClase'
 import {GestionaProfesorClase} from '../components/ProfesorClase/gestionarProfesorClase'
+
 const AccordionSection = ({ title, children }) => (
   <Accordion className="accordion">
     <AccordionSummary>
@@ -22,12 +24,16 @@ const AccordionSection = ({ title, children }) => (
 );
 
 const Uri ={
-   getCarreras: 'http://192.168.1.16:3001/api/v1/carrera/getAllCarrera',
+
+   
+    getUsuario:'http://localhost:3001/api/v1/usuario/getallUsuario'
+    getCarreras: 'http://192.168.1.16:3001/api/v1/carrera/getAllCarrera',
     getFacultades: 'http://192.168.1.16:3001/api/v1/facultad/allfacultad',
     getPeriodoacademico:'http://192.168.1.16:3001/api/v1/periodo_academico/allperiodo_academico',
     getClase:'http://192.168.1.16:3001/api/v1/clase/getallclaseE',
     getInscripcion:'http://192.168.1.16:3001/api/v1/estudiante/getestudiante',
     getProfesorClase:"http://192.168.1.16:3001/api/v1/profesor/getprofesorclase"
+
 
 }
 
@@ -61,6 +67,11 @@ export const Gestion = () => {
               <GestionarClase uri={Uri.getClase}/>
             </AccordionSection>
             <div style={{ marginBottom: '10px' }} />
+
+            <AccordionSection title="Gestionar Usuario">
+              <GestionarUsuario uri={Uri.getUsuario} />
+            </AccordionSection>
+            <div style={{ marginBottom: '10px' }} />
             <AccordionSection title="Inscripción clase(B)">
               <InscripcionEstudiantes />
             </AccordionSection>
@@ -72,6 +83,7 @@ export const Gestion = () => {
             <AccordionSection title="Inscribir Profesor">
               <GestionaProfesorClase uri={Uri.getProfesorClase} />
             </AccordionSection>
+
           </div>
         </div>
       </div>
