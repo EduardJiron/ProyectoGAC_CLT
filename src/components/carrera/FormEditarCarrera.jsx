@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 
 
 const FormEditarCarrera = ({ carrera, facultades, isEditing, onCancel,onRecargarDatos,onSnackbar}) => {
+ 
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",

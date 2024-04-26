@@ -1,5 +1,8 @@
-import { Pagination, TextField } from "@mui/material";
+import { useState, useRef } from 'react';
+import { Pagination, TextField, Button } from "@mui/material";
 import Row from "./row";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const Table = ({
   filteredData,
@@ -12,12 +15,13 @@ const Table = ({
   columns,
 }) => {
   const totalElements = filteredData.length;
+  const tableRef = useRef();
 
   const renderBody = () => {
     if (totalElements === 0) {
       return (
         <tr>
-        <td colSpan={columns.length}>No hay datos disponibles</td>
+          <td colSpan={columns.length}>No hay datos disponibles</td>
         </tr>
       );
     }
@@ -25,7 +29,6 @@ const Table = ({
     const startIndex = (page - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
     const paginatedData = filteredData.slice(startIndex, endIndex);
-  
     
     if (!Array.isArray(paginatedData)) {
       return null;
@@ -46,20 +49,25 @@ const Table = ({
       )
     ));
   };
+
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    doc.autoTable({ html: tableRef.current });
+    doc.save('table.pdf');
+  };
   
   return (
-    <div style={{display:'flex', flexDirection:'column', width:'80%'}}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '80%' }}>
       <TextField 
         label="Buscar"
         variant="standard"
         value={filterValue}
         onChange={handleFilterChange}
-        style={{width:'20%'}}
-      
+        style={{ width: '20%' }}
       />
 
-      <table style={{}}>
-        <thead style={{textAlign: 'justify',backgroundColor:'black',color:'white'}}>
+      <table ref={tableRef} style={{}}>
+        <thead style={{ textAlign: 'justify', backgroundColor: 'black', color: 'white' }}>
           <tr>{renderHeader()}</tr>
         </thead>
         <tbody>{renderBody()}</tbody>
@@ -74,7 +82,10 @@ const Table = ({
           onChange={handleChangePage}
           color="secondary"
         />
-        
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        <Button variant="contained" onClick={handleExportPDF}>Exportar a PDF</Button>
       </div>
     </div>
   );

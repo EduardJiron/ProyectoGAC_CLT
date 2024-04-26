@@ -1,8 +1,8 @@
 import { Sidebar } from "../components/sidebar";
 import { GestionarAsistencia} from '../components/asistencia/gestionarAsistencia';
 import { useState, useEffect } from "react";
-
-export const Asistencia = ({ name,token }) => {
+import { GestionarCalificaciones } from "../components/calificaciones/gestionarCalificaciones";
+export const Calificaciones = ({ name,token }) => {
 
     
     const [uri, setUri] = useState('http://192.168.1.16:3001/api/v1/clase/getallclase/'+localStorage.getItem('profesor'));
@@ -17,7 +17,7 @@ export const Asistencia = ({ name,token }) => {
             <h2>{name}</h2>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-           {uri && <GestionarAsistencia uri={uri} token={token} />}
+           {uri && <GestionarCalificaciones uri={uri} token={token} />}
           </div>
         </div>
       </div>

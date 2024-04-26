@@ -2,7 +2,7 @@ import React from "react";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
-const ContextMenu = ({ anchorPosition, onClose, onEditarClick, onEliminarClick }) => {
+const ContextMenu = ({ anchorPosition, onClose,editingHide, onEditarClick, onEliminarClick }) => {
   return (
     <Menu
       open={anchorPosition.mouseY !== null}
@@ -14,9 +14,9 @@ const ContextMenu = ({ anchorPosition, onClose, onEditarClick, onEliminarClick }
           : undefined
       }
     >
-      <MenuItem 
-        
-      onClick={onEditarClick}>Editar</MenuItem>
+     {
+        !editingHide && <MenuItem onClick={onEditarClick}>Editar</MenuItem>
+     }
       <MenuItem onClick={onEliminarClick}>Eliminar</MenuItem>
     </Menu>
   );

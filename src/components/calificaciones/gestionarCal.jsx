@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Table from "../utilities/table";
-
+import FormEditarCalificacion from "./editarCalificaciones";
 import ContextMenu from "../utilities/menuContext";
-import FormEditarClase from "./FormEditarClase";
 import {configToken} from '../utilities/funciones'
 import CustomSnackbar from "../utilities/CustomSnackbar";
+import FormEliminarCalificacion from "./eliminarCalificacion";
 import { handleChangePage, handleFilterChange, handleContextMenu, handleCancelarEdicion, handleCancelarEliminacion, handleEditarClick, handleEliminarClick } from "../utilities/eventHandlers";
 import { handlesnapbar } from "../utilities/snackbar";
 import { Button } from "@mui/material";
 
-export const GestionarClase = ({ uri }) => {
+export const GestionarCal = ({ uri,token,id_clase }) => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [page, setPage] = useState(1);
@@ -22,42 +22,32 @@ export const GestionarClase = ({ uri }) => {
   const [editingModel, setEditingModel] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [deletedModel, setDeletedModel] = useState(null);
-  const [horario, setHorario] = useState([]);
-  const [periodo_academico, setPeriodo_academico] = useState([]);
-  const [carrera, setCarrera] = useState([]);
+  const [periodo, setperiodo] = useState([]);
+  const [estudiante, setEstudiante] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   useEffect(() => {
     const fetchData = async () => {
-      if (uri) {
-        console.log(localStorage.getItem('profesor'))   ;
+     
+        
         try {
-          const response = await axios.get(uri,configToken());
-          const responseHorario = await axios.get("http://192.168.1.16:3001/api/v1/horario/allhorario",configToken());
-          const periodo_academico = await axios.get("http://192.168.1.16:3001/api/v1/periodo_academico/allperiodo_academico",configToken());
-
-          const carrera = await axios.get("http://192.168.1.16:3001/api/v1/carrera/getAllCarrera",
-          configToken());
-          
-          setCarrera(carrera.data.body);
-          console.log(carrera.data.body);
-          setPeriodo_academico(periodo_academico.data.body);
-          
-          setHorario(responseHorario.data.body);
+          const response = await axios.get(`http://192.168.1.16:3001/api/v1/calificacion/getCalificacionesByClase/${id_clase}`, configToken());
+          const resonseEstudiante = await axios.get(`http://192.168.1.16:3001/api/v1/estudiante/getEstudianteByclase/${id_clase}`,configToken());
+          setEstudiante(resonseEstudiante.data.body);
+          const responseperiodo = await axios.get("http://192.168.1.16:3001/api/v1/periodo_academico/allperiodo_academico",configToken());
+          setperiodo(responseperiodo.data.body);
           setData(response.data.body);
           setFilteredData(response.data.body);
         } catch (err) {
           console.log(err);
         }
-      } else {
-        console.error('uri no definida');
-      }
+    
     };
 
     fetchData();
-  }, [uri]);
+  }, []);
 
   useEffect(() => {
     const filtered = Array.isArray(data) ? data.filter((element) => {
@@ -74,25 +64,26 @@ export const GestionarClase = ({ uri }) => {
 
   const handleRecargarDatos = async () => {
     try {
-      const responseClase = await axios.get(uri,configToken());
-      setData(responseClase.data.body);
-    
-    } catch (error) {
-      console.error("Error al recargar datos:", error);
+      const response = await axios.get(`http://192.168.1.16:3001/api/v1/calificacion/getCalificacionesByClase/${id_clase}`, configToken());
+      setData(response.data.body);
+      setFilteredData(response.data.body);
+    }
+    catch (err) {
+      console.log(err);
     }
   };
   
   return (
     <>
       <div
-      style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+      style={{ width: '50vw', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
     >
         <Button
         color="secondary"
         variant="contained"
         onClick={() => {setEditingModel(true),setIsEditing(false)}}
         sx={{ alignSelf: 'end', marginRight: '8vw' }}
-      >Añadir Clase</Button>
+      >Añadir Calificacion</Button>
       <Table
         filteredData={filteredData}
         page={page}
@@ -101,16 +92,16 @@ export const GestionarClase = ({ uri }) => {
         handleChangePage={(event, newPage) => handleChangePage(event, newPage, setPage)}
         handleFilterChange={(event) => handleFilterChange(event, setFilterValue)}
         handleContextMenu={(event, row) => handleContextMenu(event, row, setAnchorPosition, setSelectedRow)}
-        columns={[ "nombre", "descripcion", "cod_clase",'Carrera','Horario','fecha_inicio','fecha_final']}
+        columns={["id", "Nombre", "Nota","Periodo academico"]}
       />
 
       {editingModel && (
-        <FormEditarClase
-          clase={editingModel}
+        <FormEditarCalificacion
+          Calificacion={editingModel}
+          clase={id_clase}
+          estudiante={estudiante}
           isEditing={isEditing}
-          horario={horario}
-          periodo_academico={periodo_academico}
-          carrera={carrera}
+          periodo={periodo}
           onCancel={() => handleCancelarEdicion(setEditingModel)}
           onRecargarDatos={handleRecargarDatos}
           onSnackbar={(severity, message) => handlesnapbar(severity, message, setSnackbarSeverity, setSnackbarMessage, setSnackbarOpen)}
@@ -118,8 +109,8 @@ export const GestionarClase = ({ uri }) => {
       )}
       {
         deletedModel && (
-          <FormEliminarCarrera
-            carrera={deletedModel}
+          <FormEliminarCalificacion
+            Calificacion={deletedModel}
             open={true}
             onCancel={() => handleCancelarEliminacion(setDeletedModel)}
             onRecargarDatos={(uri) => handleRecargarDatos(uri, setData)}
