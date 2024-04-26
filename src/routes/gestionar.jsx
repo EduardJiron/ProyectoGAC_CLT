@@ -10,6 +10,7 @@ import { GestionarClase } from '../components/clase/gestionarClase';
 import {InscripcionEstudiantes} from '../components/Inscripcion/gestionarInscripcion';
 import {GestionaClaseEstudiante} from '../components/EstudianteClase/gestionarEstudianteClase'
 import {GestionaProfesorClase} from '../components/ProfesorClase/gestionarProfesorClase'
+import { GestionarEstudiante } from '../components/estudiante/gestionarEstudiante';
 const AccordionSection = ({ title, children }) => (
   <Accordion className="accordion">
     <AccordionSummary>
@@ -27,7 +28,8 @@ const Uri ={
     getPeriodoacademico:'http://192.168.1.16:3001/api/v1/periodo_academico/allperiodo_academico',
     getClase:'http://192.168.1.16:3001/api/v1/clase/getallclaseE',
     getInscripcion:'http://192.168.1.16:3001/api/v1/estudiante/getestudiante',
-    getProfesorClase:"http://192.168.1.16:3001/api/v1/profesor/getprofesorclase"
+    getProfesorClase:"http://192.168.1.16:3001/api/v1/profesor/getprofesorclase",
+    getEstudiante:'http://192.168.1.16:3001/api/v1/estudiante/getAllEstudiante'
 
 }
 
@@ -71,6 +73,10 @@ export const Gestion = () => {
             <div style={{ marginBottom: '10px' }} />
             <AccordionSection title="Inscribir Profesor">
               <GestionaProfesorClase uri={Uri.getProfesorClase} />
+            </AccordionSection>
+            <div style={{ marginBottom: '10px' }} />
+            <AccordionSection title="Gestionar Estudiante">
+              <GestionarEstudiante uri={Uri.getEstudiante}/>
             </AccordionSection>
           </div>
         </div>
